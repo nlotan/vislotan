@@ -4,7 +4,7 @@ from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 
 class VisLotan:
-    def plt_plot(self, df, events, plot_by='index', figsize=(16, 10)):
+    def plt_plot(df, events, plot_by='index', figsize=(16, 10)):
         fig, axs = plt.subplots(len(events),figsize=figsize)
         
         if plot_by=='index':
@@ -19,7 +19,7 @@ class VisLotan:
                 #axs[i].legend()
                 axs[i].legend(loc='lower right')
                 
-    def plotly_plot(self, df, events, plot_by='index', mode='lines'):
+    def plotly_plot(df, events, plot_by='index', mode='lines'):
         fig = make_subplots(rows=len(events), cols=1, shared_xaxes=True, vertical_spacing=0.05)
 
         if plot_by=='index':
@@ -48,9 +48,8 @@ class VisLotan:
         fig.update_layout(showlegend=True, height=800, width=1600)
         
         return fig
-                                                            
-                
-    def plotly_plot_2df(self, df1, df2, events, plot_by='index',label1='1st', label2='2nd', title=""):
+
+    def plotly_plot_2df(df1, df2, events, plot_by='index',label1='1st', label2='2nd', title=""):
         fig = make_subplots(rows=len(events), cols=1, shared_xaxes=True, vertical_spacing=0.05)
 
         if plot_by=='index':
