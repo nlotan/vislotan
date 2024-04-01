@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='vislotan',
-    version='0.0.2',
+    version='0.0.3',
     description='Nir Lotan\'s visualization package',
     url='https://github.com/nlotan/vislotan',
     author='Nir Lotan',
