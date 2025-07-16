@@ -3,7 +3,10 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 from IPython.display import display, HTML
-
+import os
+from typing import Optional
+import ipywidgets as widgets
+from IPython.display import display, clear_output
 
 class VisLotan:
     @staticmethod
@@ -134,3 +137,111 @@ class VisLotan:
         """
         display(HTML(f"<style>.container {{ width:{size}% !important; }}</style>"))
         pd.set_option('display.max_rows', size)
+
+
+
+    def select_folder(base_path: str) -> Optional[str]:
+        """
+        Display a dropdown of folders from the specified base path,
+        and return the folder selected by the user.
+
+        Parameters:
+            base_path (str): The directory path to list folders from.
+
+        Returns:
+            Optional[str]: The name of the selected folder, or None if no selection is made.
+        """
+        # Get list of folders, sorted reverse alphabetically
+        folders = sorted(
+            [f for f in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, f))],
+            reverse=True
+        )
+
+        if not folders:
+            raise ValueError("No folders found in the specified path. Try picking a less empty place!")
+
+        # UI Elements
+        folder_dropdown = widgets.Dropdown(
+            options=folders,
+            description='Folder:',
+            style={'description_width': 'initial'},
+            layout=widgets.Layout(width='50%')
+        )
+
+        confirm_button = widgets.Button(description="Confirm Selection", button_style='success')
+        output = widgets.Output()
+        selected_folder = {}
+
+        def on_confirm_clicked(_):
+            selected = folder_dropdown.value
+            selected_folder['value'] = selected
+            with output:
+                clear_output()
+                print(f"✅ Selected folder: {selected}")
+
+        # Display the UI
+        display(widgets.VBox([
+            widgets.HTML("<b>Select a folder:</b>"),
+            folder_dropdown,
+            confirm_button,
+            output
+        ]))
+
+        confirm_button.on_click(on_confirm_clicked)
+
+        # Return value is stored in selected_folder['value']
+        return selected_folder
+
+
+    def select_file(base_path: str) -> Optional[dict]:
+        """
+        Display a dropdown of files from the specified base path,
+        and return the file selected by the user.
+
+        Parameters:
+            base_path (str): The directory path to list files from.
+
+        Returns:
+            Optional[dict]: A dictionary with key 'value' containing the selected file name,
+                            or empty if no file is selected yet.
+        """
+        # Get list of files, sorted reverse alphabetically
+        files = sorted(
+            [f for f in os.listdir(base_path) if os.path.isfile(os.path.join(base_path, f))],
+            reverse=True
+        )
+
+        if not files:
+            raise ValueError("No files found in the specified path. Try picking a place with actual files!")
+
+        # UI Elements
+        file_dropdown = widgets.Dropdown(
+            options=files,
+            description='File:',
+            style={'description_width': 'initial'},
+            layout=widgets.Layout(width='50%')
+        )
+
+        confirm_button = widgets.Button(description="Confirm Selection", button_style='info')
+        output = widgets.Output()
+        selected_file = {}
+
+        def on_confirm_clicked(_):
+            selected = file_dropdown.value
+            selected_file['value'] = selected
+            with output:
+                clear_output()
+                print(f"📄 Selected file: {selected}")
+
+        # Display the UI
+        display(widgets.VBox([
+            widgets.HTML("<b>Select a file:</b>"),
+            file_dropdown,
+            confirm_button,
+            output
+        ]))
+
+        confirm_button.on_click(on_confirm_clicked)
+
+        # Return a dictionary with selection (poll externally for 'value')
+        return selected_file # This requires polling externally to check if selection is done
